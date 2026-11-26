@@ -12,8 +12,8 @@ In High-Energy Physics (HEP) experiments at facilities like CERN's Large Hadron 
 
 1. **End-to-End Scalable Pipeline:** Efficiently stream and preprocess $100,000$ cylindrical calorimeter showers ($45 \times 16 \times 9 = 6,480\text{ voxels}$) conditioned on incident electron energies ($1\text{ GeV} \le E_{\text{inc}} \le 1\text{ TeV}$) from HDF5 containers without memory overhead.
 2. **Iterative Generative Modeling (Baseline $\rightarrow$ SOTA):**
-   * **Stage 1 (Baseline):** Conditional Variational Autoencoder (**cVAE**) to verify data transforms, conditioning, and physical inversion logic.
-   * **Stage 2 (High-Fidelity):** Conditional Diffusion / Flow-Matching model to capture sharp structural tails, multi-modal energy deposits, and high voxel sparsity.
+   - **Stage 1 (Baseline):** Conditional Variational Autoencoder (**cVAE**) to verify data transforms, conditioning, and physical inversion logic.
+   - **Stage 2 (High-Fidelity):** Conditional Diffusion / Flow-Matching model to capture sharp structural tails, multi-modal energy deposits, and high voxel sparsity.
 3. **Rigorous Physics Validation:** Quantitative benchmarking against held-out Geant4 reference data (`dataset_2_2.hdf5`) across longitudinal, radial, and angular energy profiles, total energy conservation ratios, voxel sparsity, and Classifier Two-Sample Tests (ROC-AUC $\rightarrow 0.50$).
 4. **Transparent Speedup Benchmarking:** Reproducible per-event latency comparisons against Geant4 execution on documented GPU hardware and batch configurations.
 
@@ -98,13 +98,13 @@ $$
 
 ### 3. Training Objectives
 
-* **Conditional VAE (Baseline):**
+- **Conditional VAE (Baseline):**
   $$
-  \mathcal{L}_{\text{cVAE}} = \mathcal{L}_{\text{recon}}(\hat{\tilde{\mathbf{x}}}, \tilde{\mathbf{x}}) + \beta \cdot D_{\text{KL}}\!\left(q_\phi(\mathbf{z}\mid \tilde{\mathbf{x}}, c) \,\Vert{}\, \mathcal{N}(\mathbf{0}, \mathbf{I})\right)
+  \mathcal{L}_{\text{cVAE}} = \mathcal{L}_{\text{recon}}\!\left(\hat{\tilde{\mathbf{x}}}, \tilde{\mathbf{x}}\right) + \beta \cdot D_{\text{KL}}\!\left(q_\phi(\mathbf{z}\mid \tilde{\mathbf{x}}, c) \,\Vert\, \mathcal{N}(\mathbf{0}, \mathbf{I})\right)
   $$
-* **Conditional Diffusion (DDPM):**
+- **Conditional Diffusion (DDPM):**
   $$
-  \mathcal{L}_{\text{diff}} = \mathbb{E}_{t,\, \tilde{\mathbf{x}}_0,\, \boldsymbol{\epsilon},\, c}\!\left[\left\Vert{}\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta\!\left(\tilde{\mathbf{x}}_t,\, t,\, c\right)\right\Vert{}_2^2\right]
+  \mathcal{L}_{\text{diff}} = \mathbb{E}_{t,\, \tilde{\mathbf{x}}_0,\, \boldsymbol{\epsilon},\, c}\!\left[\left\|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta\!\left(\tilde{\mathbf{x}}_t,\, t,\, c\right)\right\|_2^2\right]
   $$
 
 ## Repository Structure
@@ -165,12 +165,12 @@ python -m src.evaluate \
 
 All generated samples are benchmarked against `dataset_2_2.hdf5` on:
 
-* **Total Energy Ratio:** $E_{\text{gen}} / E_{\text{inc}}$ across energy bins ($1\text{ GeV} \rightarrow 1\text{ TeV}$).
-* **Longitudinal Profile ($E_z$):** Mean energy deposition across all $45$ detector layers.
-* **Transverse Profiles ($E_r, E_\alpha$):** Radial energy containment across $9$ radial bins and angular symmetry across $16$ angular bins.
-* **Voxel Sparsity:** Distribution of zero-energy fraction per shower after applying the $0.015\text{ MeV}$ readout cutoff.
-* **Classifier Two-Sample Test (AUC):** Binary neural network trained to distinguish Geant4 vs. generated showers (target $\text{AUC} \approx 0.50$).
-* **Inference Speedup:**
+- **Total Energy Ratio:** $E_{\text{gen}} / E_{\text{inc}}$ across energy bins ($1\text{ GeV} \rightarrow 1\text{ TeV}$).
+- **Longitudinal Profile ($E_z$):** Mean energy deposition across all $45$ detector layers.
+- **Transverse Profiles ($E_r, E_\alpha$):** Radial energy containment across $9$ radial bins and angular symmetry across $16$ angular bins.
+- **Voxel Sparsity:** Distribution of zero-energy fraction per shower after applying the $0.015\text{ MeV}$ readout cutoff.
+- **Classifier Two-Sample Test (AUC):** Binary neural network trained to distinguish Geant4 vs. generated showers (target $\text{AUC} \approx 0.50$).
+- **Inference Speedup:**
   $$
   \text{Speedup} = \frac{T_{\text{Geant4 / event}}}{T_{\text{model / event}}}
   $$
